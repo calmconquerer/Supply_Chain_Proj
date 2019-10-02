@@ -1,0 +1,1456 @@
+{% extends "supplier/base.html" %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+<div class="card" style="width: 100%;">
+<div class="card-header">
+  <h4>User Roles</h4>
+</div>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">
+    <h1>{{user.0.username}}</h1>
+    <form class="" action="" method="post" autocomplete="off">
+      {% csrf_token %}
+      <!-- Table  -->
+
+      <table class="table table-bordered">
+        <!-- Table body -->
+        <tbody>
+          <tr>
+            <th scope="row" width="400px">
+              <!-- Default unchecked -->
+              <div class="custom-control custom-checkbox">
+                {% if allow_role_inventory.0.form_id == 4 %}
+                  <input type="checkbox" class="custom-control-input" name="Inventory" id="tableDefaultCheck4" checked>
+                {% else %}
+                  <input type="checkbox" class="custom-control-input" name="Inventory" id="tableDefaultCheck4" >
+                {% endif %}
+                <label class="custom-control-label" for="tableDefaultCheck4">Inventory</label>
+              </div>
+            </th>
+            <th style="text-align: center;" width="100px">Display</th>
+            <th style="text-align: center;" width="100px">Add</th>
+            <th style="text-align: center;" width="100px">Edit</th>
+            <th style="text-align: center;" width="100px">Delete</th>
+            <th style="text-align: center;" width="100px">Shop</th>
+          </tr>
+          <tr>
+            <th scope="row">
+              <span>&nbsp;&nbsp;&nbsp;</span>
+              Inventory 
+            </th>
+
+            <td style="text-align: center;">
+              <div class="custom-control custom-checkbox">
+                {% if allow_role_inventory.0.display == 1 %}
+                <input type="checkbox" class="custom-control-input" name="i_display[]" id="display41" checked value="i_inventory_display">
+                {% else %}
+                <input type="checkbox" class="custom-control-input" name="i_display[]" id="display41" value="i_inventory_display">
+                {% endif %}
+                <label class="custom-control-label" for="display41"></label>
+              </div>
+            </td>
+            
+
+            <td style="text-align: center;">
+              <div class="custom-control custom-checkbox">
+                {% if allow_role_inventory.0.add == 1 %}
+                <input type="checkbox" class="custom-control-input" name="i_add[]" id="add41" checked value="i_inventory_add">
+                {% else %}
+                <input type="checkbox" class="custom-control-input" name="i_add[]" id="add41" value="i_inventory_add">
+                {% endif %}
+                <label class="custom-control-label" for="add41"></label>
+              </div>
+            </td>
+            <td style="text-align: center;">
+              <div class="custom-control custom-checkbox">
+                {% if allow_role_inventory.0.edit == 1 %}
+                <input type="checkbox" class="custom-control-input" name="i_edit[]" id="edit41" checked value="i_inventory_edit">
+                {% else %}
+                <input type="checkbox" class="custom-control-input" name="i_edit[]" id="edit41" value="i_inventory_edit">
+                {% endif %}
+                <label class="custom-control-label" for="edit41"></label>
+              </div>
+            </td>
+            <td style="text-align: center;">
+              <div class="custom-control custom-checkbox">
+                {% if allow_role_inventory.0.delete == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="i_delete[]" id="delete41" checked value="i_inventory_delete">
+                {% else %}
+                  <input type="checkbox" class="custom-control-input" name="i_delete[]" id="delete41" value="i_inventory_delete">
+                {% endif %}
+                <label class="custom-control-label" for="delete41"></label>
+              </div>
+            </td>
+            <td style="text-align: center;">
+              <div class="custom-control custom-checkbox">
+                {% if allow_role_inventory.0.r_print == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="i_shop[]" id="shop41" checked value="i_inventory_shop">
+                {% else %}
+                  <input type="checkbox" class="custom-control-input" name="i_shop[]" id="shop41" value="i_inventory_shop">
+                {% endif %}
+                <label class="custom-control-label" for="shop41"></label>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <table class="table table-bordered">
+          <!-- Table body -->
+          <tbody>
+            <tr>
+              <th scope="row" width="400px">
+                <!-- Default unchecked -->
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.0.form_id == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="customer" id="tableDefaultCheck2" checked>
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="customer" id="tableDefaultCheck2" >
+                  {% endif %}
+                  <label class="custom-control-label" for="tableDefaultCheck2">Customer</label>
+                </div>
+              </th>
+              <th style="text-align: center;" width="100px">Display</th>
+              <th style="text-align: center;" width="100px">Add</th>
+              <th style="text-align: center;" width="100px">Edit</th>
+              <th style="text-align: center;" width="100px">Delete</th>
+              <th style="text-align: center;" width="100px">Print</th>
+            </tr>
+            <tr>
+              <th scope="row">
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Request For Quotation
+              </th>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.0.display == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display11" checked value="c_rfq_display">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display11" value="c_rfq_display">
+                  {% endif %}
+                  <label class="custom-control-label" for="display11"></label>
+                </div>
+              </td>
+              
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.0.add == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add11" checked value="c_rfq_add">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add11" value="c_rfq_add">
+                  {% endif %}
+                  <label class="custom-control-label" for="add11"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.0.edit == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit11" checked value="c_rfq_edit">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit11" value="c_rfq_edit">
+                  {% endif %}
+                  <label class="custom-control-label" for="edit11"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.0.delete == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete11" checked value="c_rfq_delete">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete11" value="c_rfq_delete">
+                  {% endif %}
+                  <label class="custom-control-label" for="delete11"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.0.r_print == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="c_print[]" id="print11" checked value="c_rfq_print">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="c_print[]" id="print11" value="c_rfq_print">
+                  {% endif %}
+                  <label class="custom-control-label" for="print11"></label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Quotation
+              </th>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.1.display == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display12" checked value="c_quotation_display">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display12" value="c_quotation_display">
+                  {% endif %}
+                  <label class="custom-control-label" for="display12"></label>
+                </div>
+              </td>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.1.add == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add12" checked value="c_quotation_add">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add12" value="c_quotation_add">
+                  {% endif %}
+                  <label class="custom-control-label" for="add12"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.1.edit == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit12" checked value="c_quotation_edit">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit12" value="c_quotation_edit">
+                  {% endif %}
+                  <label class="custom-control-label" for="edit12"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.1.delete == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete12" checked value="c_quotation_delete">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete12" value="c_quotation_delete">
+                  {% endif %}
+                  <label class="custom-control-label" for="delete12"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.1.r_print == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="c_print[]" id="print12" checked value="c_quotation_print">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="c_print[]" id="print12" value="c_quotation_print">
+                  {% endif %}
+                  <label class="custom-control-label" for="print12"></label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Purchase Order
+              </th>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.2.display == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display13" checked value="c_po_display">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display13" value="c_po_display">
+                  {% endif %}
+                  <label class="custom-control-label" for="display13"></label>
+                </div>
+              </td>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.2.add == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add13" checked value="c_po_add">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add13" value="c_po_add">
+                  {% endif %}
+                  <label class="custom-control-label" for="add13"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.2.edit == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit13" checked value="c_po_edit">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit13" value="c_po_edit">
+                  {% endif %}
+                  <label class="custom-control-label" for="edit13"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.2.delete == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete13" checked value="c_po_delete">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete13" value="c_po_delete">
+                  {% endif %}
+                  <label class="custom-control-label" for="delete13"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.2.r_print == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="c_print[]" id="print13" checked value="c_po_print">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="c_print[]" id="print13" value="c_po_print">
+                  {% endif %}
+                  <label class="custom-control-label" for="print13"></label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Delivery Challan
+              </th>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.3.display == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display14" checked value="c_dc_display">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display14" value="c_dc_display">
+                  {% endif %}
+                  <label class="custom-control-label" for="display14"></label>
+                </div>
+              </td>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.3.add == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add14" checked value="c_dc_add">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add14" value="c_dc_add">
+                  {% endif %}
+                  <label class="custom-control-label" for="add14"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.3.edit == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit14" checked value="c_dc_edit">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit14" value="c_dc_edit">
+                  {% endif %}
+                  <label class="custom-control-label" for="edit14"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.3.delete == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete14" checked value="c_dc_delete">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete14" value="c_dc_delete">
+                  {% endif %}
+                  <label class="custom-control-label" for="delete14"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.3.r_print == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="c_print[]" id="print14" checked value="c_dc_print">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="c_print[]" id="print14" value="c_dc_print">
+                  {% endif %}
+                  <label class="custom-control-label" for="print14"></label>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <th scope="row">
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                Material Receipt Note
+              </th>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.4.display == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display15" checked value="c_mrn_display">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="display[]" id="display15" value="c_mrn_display">
+                  {% endif %}
+                  <label class="custom-control-label" for="display15"></label>
+                </div>
+              </td>
+
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.4.add == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add15" checked value="c_mrn_add">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="add[]" id="add15" value="c_mrn_add">
+                  {% endif %}
+                  <label class="custom-control-label" for="add15"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.4.edit == 1 %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit15" checked value="c_mrn_edit">
+                  {% else %}
+                  <input type="checkbox" class="custom-control-input" name="edit[]" id="edit15" value="c_mrn_edit">
+                  {% endif %}
+                  <label class="custom-control-label" for="edit15"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  {% if allow_role.4.delete == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete15" checked value="c_mrn_delete">
+                  {% else %}
+                    <input type="checkbox" class="custom-control-input" name="delete[]" id="delete15" value="c_mrn_delete">
+                  {% endif %}
+                  <label class="custom-control-label" for="delete15"></label>
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="c_print[]" id="print15" disabled value="c_mrn_print">
+                  <label class="custom-control-label" for="print15"></label>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+        <!-- Table  -->
+          <table class="table table-bordered">
+            <!-- Table body -->
+            <tbody>
+              <tr>
+                <th scope="row" width="400px">
+                  <!-- Default unchecked -->
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.1.form_id == 2 %}
+                      <input type="checkbox" class="custom-control-input" name="Supplier" id="tableDefaultCheck1" checked>
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="Supplier" id="tableDefaultCheck1" >
+                    {% endif %}
+                    <label class="custom-control-label" for="tableDefaultCheck1">Supplier</label>
+                  </div>
+                </th>
+                <th style="text-align: center;" width="100px">Display</th>
+                <th style="text-align: center;" width="100px">Add</th>
+                <th style="text-align: center;" width="100px">Edit</th>
+                <th style="text-align: center;" width="100px">Delete</th>
+                <th style="text-align: center;" width="100px">Print</th>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                  Request For Quotation
+                </th>
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.0.display == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display21" checked value="s_rfq_display">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display21" value="s_rfq_display">
+                    {% endif %}
+                    <label class="custom-control-label" for="display21"></label>
+                  </div>
+                </td>
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.0.add == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add21" checked value="s_rfq_add">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add21" value="s_rfq_add">
+                    {% endif %}
+                    <label class="custom-control-label" for="add21"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.0.edit == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit21" checked value="s_rfq_edit">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit21" value="s_rfq_edit">
+                    {% endif %}
+                    <label class="custom-control-label" for="edit21"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.0.delete == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete21" checked value="s_rfq_delete">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete21" value="s_rfq_delete">
+                    {% endif %}
+                    <label class="custom-control-label" for="delete21"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.0.r_print == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_print[]" id="print21" checked value="s_rfq_print">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_print[]" id="print21" value="s_rfq_print">
+                    {% endif %}
+                    <label class="custom-control-label" for="print21"></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                  Quotation
+                </th>
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.1.display == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display22" checked value="s_quotation_display">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display22" value="s_quotation_display">
+                    {% endif %}
+                    <label class="custom-control-label" for="display22"></label>
+                  </div>
+                </td>
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.1.add == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add22" checked value="s_quotation_add">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add22" value="s_quotation_add">
+                    {% endif %}
+                    <label class="custom-control-label" for="add22"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.1.edit == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit22" checked value="s_quotation_edit">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit22" value="s_quotation_edit">
+                    {% endif %}
+                    <label class="custom-control-label" for="edit22"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.1.delete == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete22" checked value="s_quotation_delete">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete22" value="s_quotation_delete">
+                    {% endif %}
+                    <label class="custom-control-label" for="delete22"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.1.r_print == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_print[]" id="print22" checked value="s_quotation_print">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_print[]" id="print22" value="s_quotation_print">
+                    {% endif %}
+                    <label class="custom-control-label" for="print22"></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                  Purchase Order
+                </th>
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.2.display == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display23" checked value="s_po_display">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display23" value="s_po_display">
+                    {% endif %}
+                    <label class="custom-control-label" for="display23"></label>
+                  </div>
+                </td>
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.2.add == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add23" checked value="s_po_add">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add23" value="s_po_add">
+                    {% endif %}
+                    <label class="custom-control-label" for="add23"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.2.edit == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit23" checked value="s_po_edit">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit23" value="s_po_edit">
+                    {% endif %}
+                    <label class="custom-control-label" for="edit23"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.2.delete == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete23" checked value="s_po_delete">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete23" value="s_po_delete">
+                    {% endif %}
+                    <label class="custom-control-label" for="delete23"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.2.r_print == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_print[]" id="print23" checked value="s_po_print">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_print[]" id="print23" value="s_po_print">
+                    {% endif %}
+                    <label class="custom-control-label" for="print23"></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                  Delivery Challan
+                </th>
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.3.display == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display24" checked value="s_dc_display">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display24" value="s_dc_display">
+                    {% endif %}
+                    <label class="custom-control-label" for="display24"></label>
+                  </div>
+                </td>
+
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.3.add == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add24" checked value="s_dc_add">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add24" value="s_dc_add">
+                    {% endif %}
+                    <label class="custom-control-label" for="add24"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.3.edit == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit24" checked value="s_dc_edit">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit24" value="s_dc_edit">
+                    {% endif %}
+                    <label class="custom-control-label" for="edit24"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.3.delete == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete24" checked value="s_dc_delete">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete24" value="s_dc_delete">
+                    {% endif %}
+                    <label class="custom-control-label" for="delete24"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.3.r_print == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_print[]" id="print24" checked value="s_dc_print">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_print[]" id="print24" value="s_dc_print">
+                    {% endif %}
+                    <label class="custom-control-label" for="print24"></label>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="row">
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                  Material Receipt Note
+                </th>
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.4.display == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display25" checked value="s_mrn_display">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_display[]" id="display25" value="s_mrn_display">
+                    {% endif %}
+                    <label class="custom-control-label" for="display25"></label>
+                  </div>
+                </td>
+
+
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.4.add == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add25" checked value="s_mrn_add">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_add[]" id="add25" value="s_mrn_add">
+                    {% endif %}
+                    <label class="custom-control-label" for="add25"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.4.edit == 1 %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit25" checked value="s_mrn_edit">
+                    {% else %}
+                    <input type="checkbox" class="custom-control-input" name="s_edit[]" id="edit25" value="s_mrn_edit">
+                    {% endif %}
+                    <label class="custom-control-label" for="edit25"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    {% if allow_role_supplier.4.delete == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete25" checked value="s_mrn_delete">
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="s_delete[]" id="delete25" value="s_mrn_delete">
+                    {% endif %}
+                    <label class="custom-control-label" for="delete25"></label>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="s_print[]" id="print25" disabled value="s_mrn_print">
+                    <label class="custom-control-label" for="print25"></label>
+                  </div>
+                </td>
+              </tr>
+  
+            </tbody>
+          </table>
+          <!-- Table  -->
+            <table class="table table-bordered">
+              <!-- Table body -->
+              <tbody>
+                <tr>
+                  <th scope="row" width="400px">
+                    <!-- Default unchecked -->
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.1.form_id == 3 %}
+                      <input type="checkbox" class="custom-control-input" name="Transaction" id="tableDefaultCheck3" checked>
+                    {% else %}
+                      <input type="checkbox" class="custom-control-input" name="Transaction" id="tableDefaultCheck3" >
+                    {% endif %}
+                    <label class="custom-control-label" for="tableDefaultCheck3">Transaction</label>
+                    </div>
+                  </th>
+                  <th style="text-align: center;" width="100px">Display</th>
+                  <th style="text-align: center;" width="100px">Return</th>                  
+                  <th style="text-align: center;" width="100px">Add</th>
+                  <th style="text-align: center;" width="100px">Edit</th>
+                  <th style="text-align: center;" width="100px">Delete</th>
+                  <th style="text-align: center;" width="100px">Print</th>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Chart Of Account
+                  </th>
+                  
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.0.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display31" checked value="t_coa_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display31" value="t_coa_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display31"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return31" disabled value="t_coa_return">
+                  
+                      <label class="custom-control-label" for="return31"></label>
+                    </div>
+                  </td>
+                  
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.0.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add31" checked value="t_coa_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add31" value="t_coa_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add31"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.0.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit31" checked value="t_coa_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit31" value="t_coa_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit31"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.0.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete31" checked value="t_coa_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete31" value="t_coa_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete31"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.0.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print31" checked value="t_coa_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print31" value="t_coa_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print31"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Purchase
+                  </th>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.1.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display32" checked value="t_purchase_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display32" value="t_purchase_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display32"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.1.r_return == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return32" checked value="t_purchase_return">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return32" value="t_purchase_return">
+                      {% endif %}
+                      <label class="custom-control-label" for="return32"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.1.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add32" checked value="t_purchase_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add32" value="t_purchase_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add32"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.1.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit32" checked value="t_purchase_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit32" value="t_purchase_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit32"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.1.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete32" checked value="t_purchase_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete32" value="t_purchase_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete32"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.1.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print32" checked value="t_purchase_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print32" value="t_purchase_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print32"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Purchase Return
+                  </th>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.2.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display33" checked value="t_pr_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display33" value="t_pr_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display33"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return33" disabled value="t_pr_return">
+                  
+                      <label class="custom-control-label" for="return33"></label>
+                    </div>
+                  </td>                  
+
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.2.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add33" checked value="t_pr_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add33" value="t_pr_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add33"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.2.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit33" checked value="t_pr_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit33" value="t_pr_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit33"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.2.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete33" checked value="t_pr_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete33" value="t_pr_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete33"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.2.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print33" checked value="t_pr_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print33" value="t_pr_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print33"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Sale
+                  </th>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.3.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display34" checked value="t_sale_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display34" value="t_sale_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display34"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.3.r_return == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return34" checked value="t_sale_return">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return34" value="t_sale_return">
+                      {% endif %}
+                      <label class="custom-control-label" for="return34"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.3.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add34" checked value="t_sale_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add34" value="t_sale_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add34"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.3.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit34" checked value="t_sale_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit34" value="t_sale_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit34"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.3.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete34" checked value="t_sale_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete34" value="t_sale_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete34"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.3.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print34" checked value="t_sale_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print34" value="t_sale_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print34"></label>
+                    </div>
+                  </td>
+                </tr>
+  
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Sale Return
+                  </th>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.4.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display35" checked value="t_sr_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display35" value="t_sr_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display35"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return35" disabled value="t_sr_return">
+                  
+                      <label class="custom-control-label" for="return35"></label>
+                    </div>
+                  </td>                  
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.4.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add35" checked value="t_sr_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add35" value="t_sr_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add35"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.4.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit35" checked value="t_sr_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit35" value="t_sr_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit35"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.4.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete35" checked value="t_sr_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete35" value="t_sr_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete35"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.4.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print35" checked value="t_sr_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print35" value="t_sr_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print35"></label>
+                    </div>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Journal Voucher
+                  </th>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.5.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display36" checked value="t_jv_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display36" value="t_jv_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display36"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return36" disabled value="t_jv_return">
+                  
+                      <label class="custom-control-label" for="return36"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.5.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add36" checked value="t_jv_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add36" value="t_jv_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add36"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.5.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit36" checked value="t_jv_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit36" value="t_jv_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit36"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.5.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete36" checked value="t_jv_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete36" value="t_jv_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete36"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.5.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print36" checked value="t_jv_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print36" value="t_jv_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print36"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Bank Receiving Voucher
+                  </th>
+                  
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.6.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display37" checked value="t_brv_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display37" value="t_brv_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display37"></label>
+                    </div>
+                  </td>
+                 
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return37" disabled value="t_brv_return">
+                  
+                      <label class="custom-control-label" for="return37"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.6.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add37" checked value="t_brv_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add37" value="t_brv_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add37"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.6.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit37" checked value="t_brv_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit37" value="t_brv_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit37"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.6.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete37" checked value="t_brv_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete37" value="t_brv_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete37"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.6.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print37" checked value="t_brv_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print37" value="t_brv_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print37"></label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Cash Receiving Voucher
+                  </th>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.7.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display38" checked value="t_crv_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display38" value="t_crv_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display38"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return38" disabled value="t_crv_return">
+                  
+                      <label class="custom-control-label" for="return38"></label>
+                    </div>
+                  </td>                  
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.7.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add38" checked value="t_crv_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add38" value="t_crv_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add38"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.7.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit38" checked value="t_crv_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit38" value="t_crv_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit38"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.7.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete38" checked value="t_crv_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete38" value="t_crv_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete38"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.7.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print38" checked value="t_crv_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print38" value="t_crv_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print38"></label>
+                    </div>
+                  </td>
+                </tr>
+  
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Bank Payment Voucher
+                  </th>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.8.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display39" checked value="t_bpv_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display39" value="t_bpv_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display39"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return39" disabled value="t_bpv_return">
+                  
+                      <label class="custom-control-label" for="return39"></label>
+                    </div>
+                  </td>                  
+                  
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.8.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add39" checked value="t_bpv_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add39" value="t_bpv_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add39"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.8.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit39" checked value="t_bpv_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit39" value="t_bpv_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit39"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.8.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete39" checked value="t_bpv_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete39" value="t_bpv_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete39"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.8.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print39" checked value="t_bpv_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print39" value="t_bpv_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print39"></label>
+                    </div>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <th scope="row">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    Cash Payment Voucher
+                  </th>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.9.display == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display310" checked value="t_cpv_display">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_display[]" id="display310" value="t_cpv_display">
+                      {% endif %}
+                      <label class="custom-control-label" for="display310"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="t_return[]" id="return310" disabled value="t_cpv_return">
+                  
+                      <label class="custom-control-label" for="return310"></label>
+                    </div>
+                  </td>
+
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.9.add == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add310" checked value="t_cpv_add">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_add[]" id="add310" value="t_cpv_add">
+                      {% endif %}
+                      <label class="custom-control-label" for="add310"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.9.edit == 1 %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit310" checked value="t_cpv_edit">
+                      {% else %}
+                      <input type="checkbox" class="custom-control-input" name="t_edit[]" id="edit310" value="t_cpv_edit">
+                      {% endif %}
+                      <label class="custom-control-label" for="edit310"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.9.delete == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete310" checked value="t_cpv_delete">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_delete[]" id="delete310" value="t_cpv_delete">
+                      {% endif %}
+                      <label class="custom-control-label" for="delete310"></label>
+                    </div>
+                  </td>
+                  <td style="text-align: center;">
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_transaction.9.r_print == 1 %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print310" checked value="t_cpv_print">
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="t_print[]" id="print310" value="t_cpv_print">
+                      {% endif %}
+                      <label class="custom-control-label" for="print310"></label>
+                    </div>
+                  </td>
+                </tr>                              
+                
+              </tbody>
+            </table>
+
+            <table class="table table-bordered">
+              <!-- Table body -->
+              <tbody>
+                <tr>
+                  <th scope="row" width="400px">
+                    <!-- Default unchecked -->
+                    <div class="custom-control custom-checkbox">
+                      {% if allow_role_reports.0.form_id == 5 %}
+                        <input type="checkbox" class="custom-control-input" name="Reports" id="tableDefaultCheck5" checked>
+                      {% else %}
+                        <input type="checkbox" class="custom-control-input" name="Reports" id="tableDefaultCheck5" >
+                      {% endif %}
+                      <label class="custom-control-label" for="tableDefaultCheck5">Reports</label>
+                    </div>
+                  </th>
+                  <th style="text-align: center;" width="100px">Display</th>
+                  <th style="text-align: center;" width="100px">Add</th>
+                  <th style="text-align: center;" width="100px">Edit</th>
+                  <th style="text-align: center;" width="100px">Delete</th>
+                  <th style="text-align: center;" width="100px">Print</th>
+                </tr>
+              </tbody>
+            </table>
+                  
+            <div class="text-right">
+              <button type="submit" class="btn btn-success" name="button">Submit</button>
+            </div>
+    </form>
+      </li>
+    </ul>
+    </div>
+
+
+{% endblock body %}

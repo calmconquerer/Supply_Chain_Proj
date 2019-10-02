@@ -1,0 +1,54 @@
+{% extends "supplier/base.html" %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+<div class="card" style="width: 100%;">
+    <div class="card-header">
+        <h4>Multi Branches</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <div class="input-group">
+                <div class="col-md-12">
+                    <a role="button" href="{% url 'new-multi-branches' %}" style="float:right;"
+                       class="btn btn-outline-secondary" name="button"><i class="fas fa-plus"></i> Add New</a>
+                </div>
+            </div>
+            <br>
+            <div class="table table-responsive content-loader">
+                <table class="table table-bordered sort" id="dataTable">
+                    <thead>
+                    <tr>
+                        <th width="140px">S. No</th>
+                        <th>Branch Code</th>
+                        <th>Branch Name</th>
+                        <th>Created By</th>
+                        <th>Email</th>
+                        <th width="400px">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for value in all_branches %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ value.branch_code }}</td>
+                        <td>{{ value.branch_name }}</td>
+                        <td>Admin</td>
+                        <td>{{ value.email }}</td>
+                        <td>
+                            <a class="edit_list" href="{% url 'edit-multi-branches' pk=value.branch_id %}" data-toggle=""><i
+                                    class="material-icons">&#xE254;</i></a>
+                            <a class="delete_purchase" href="#"
+                               data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+{% endblock body %}

@@ -1,0 +1,64 @@
+{% extends "supplier/base.html" %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+<div class="card" style="width: 100%;">
+<div class="card-header">
+  <h4>Users</h4>
+</div>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item">
+    <div class="input-group">
+      <div class="col-md-12">
+          <a role="button" href="{% url 'register' %}" style="float:right;" class="btn btn-outline-secondary" name="button"><i class="fas fa-plus"></i> Add New</a>
+      </div>
+    </div>
+    <br>
+    <div class="table table-responsive">
+      <table class="table table-bordered sort" id="dataTable">
+          <thead>
+              <tr>
+                  <th width="60px">S NO.</th>
+                  <th width="150px">First Name</th>
+                  <th width="150px">Last Name</th>
+                  <th width="150px">User Name</th>
+                  <th width="150px">Email</th>
+                  <th width="150px">Status</th>
+                  <th width="100px">Date Joined</th>
+                  <td>Action</td>
+              </tr>
+          </thead>
+          <tbody>
+            {% for row in all_user %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ row.first_name }}</td>
+                <td>{{row.last_name}}</td>
+                <td>{{ row.username }}</td>
+                <td>{{ row.email }}</td>
+                {% if row.is_active == 1 %}
+                  <td>Active</td>
+                {% else %}
+                  <td>Deactive</td>
+                {% endif %}
+                <td>{{ row.date_joined }}</td>
+                <td>
+                      <a class="edit_list" href="{% url 'edit-user-roles' pk=row.id %}"><i class="material-icons">&#xE254;</i></a>
+                      
+                      <a class="delete" href="{% url 'user-roles' pk=row.id %}"><i class="fas fa-tasks"></i></a>
+                      
+                      <a class="return" href="{% url 'password-reset' %}" data-toggle=""><i class="fas fa-undo"></i></a>
+
+                      <a class="delete" href="{% url 'delete-user-roles' pk=row.id %}" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+    </div>
+  </li>
+</ul>
+</div>
+
+
+{% endblock body %}

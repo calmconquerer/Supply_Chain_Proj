@@ -1,0 +1,91 @@
+{% extends "supplier/base.html" %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+<div class="card" style="width: 100%;">
+<div class="card-header">
+  <h4>Add Item</h4>
+</div>
+<ul class="list-group list-group-flush">
+<form id="add-item-form" action="" method="post" autocomplete="off">
+  <li class="list-group-item">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group col-md-2">
+          <label for="">Select Main Category</label>
+          <select class="form-control form-control-sm main_drop" id="main_category">
+            <option value="">Select:</option>
+            {% for value in main_categories %}
+            <option value="{{value.id}}">{{value.main}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="">Select Sub Category</label>
+          <select class="form-control form-control-sm" id="sub_category">
+          </select>
+        </div>
+        <div class="form-group col-md-1">
+          <label for="">Size</label>
+          <input type="text" class="form-control form-control-sm"  id="size">
+        </div>
+        <div class="form-group col-md-3">
+          <label for="">Description</label>
+          <textarea name="name" class="form-control form-control-sm" rows="" cols="25" id="product_desc" style="height:30px; width:275px;"></textarea>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="">Unit</label>
+          <select class="form-control form-control-sm" id="select_unit" >
+            <option value="">FT</option>
+            <option value="">MTR</option>
+            <option value="">EA.length</option>
+            <option value="">NOS.</option>
+            <option value="">PCS.</option>
+            <option value="">INCHES</option>
+            <option value="">P.DOZ</option>
+            <option value="">PAIR</option>
+            <option value="">TINS.</option>
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="">Opening Stock</label>
+          <input type="text" class="form-control form-control-sm" id="opening_stock" value="0">
+        </div>
+      </div>
+      <div class="table-title">
+        <div class="text-right">
+            <button type="button" class="btn btn-info add-new-row"><i class="fa fa-plus"></i> Add New</button>
+        </div>
+      </div>
+      <br>
+</li>
+<li class="list-group-item">
+  <div class="table table-responsive">
+    <table class="table table-bordered" id="add-item-table">
+          <thead>
+              <tr>
+                  <th width="130px">S. No</th>
+                  <th width="130px">Main Category</th>
+                  <th width="130px">Sub Category</th>
+                  <th width="200px">Item Name</th>
+                  <th width="250px">Item Description</th>
+                  <th width="100px">Size</th>
+                  <th width="100px">Unit</th>
+                  <th width="100px">Opening Stock</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+      </table>
+    </div>
+    <div class="text-center">
+      <button type="submit" class="btn btn-outline-primary">Submit <small>(Items)</small></button>
+    </div>
+  </li>
+  </form>
+</ul>
+</div>
+
+
+{% endblock body %}
