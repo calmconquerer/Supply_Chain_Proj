@@ -1620,7 +1620,6 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 				 .done(function fun(data){
 					 $('#dc').html('');
 						 for (var j = 0; j < data.all_dc.length; j++) {
-							 console.log(data.all_dc[j][1]);
 								$("#dc").append($("<option>").attr('value',data.all_dc[j][1]).text(data.all_dc[j][1]));
 						 }
 				 });
@@ -2654,6 +2653,7 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 
 								// Add row on add button click
 								$(document).on("click", ".add-sale-return", function(){
+									console.log("clickde");
 								var empty = false;
 								var input = $(this).parents("tr").find('input[type="text"]');
 										input.each(function(){
@@ -2768,6 +2768,8 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 											'quantity' : "",
 											'price' : "",
 											'sales_tax' : "",
+											"dc_no": "",
+											"dcdetailid": "",
 										};
 										$tds.each(function(i, el){
 											if (i === 1) {
@@ -2781,6 +2783,14 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 											}
 											else if (i === 8) {
 													row["sales_tax"] = ($(this).text());
+											}
+											else if (i === 11) {
+													row["dcdetailid"] = ($(this).text());
+
+											}
+											else if (i === 11) {
+													row["dc_ref"] = ($(this).text());
+
 											}
 										});
 										data.push(row);
@@ -2890,6 +2900,7 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 					 var index = $("#edit-sale-table tbody tr:last-child").index();
 					 for (var i = 0; i < data.row.length; i++) {
 						var row = '<tr>' +
+								'<td>'+count+'</td>'+
 								'<td style="display:none;">'+data.row[i][1]+'</td>'+
 								'<td id="get_item_code">'+data.row[i][2]+'</td>' +
 								'<td>'+data.row[i][3]+'</td>' +
@@ -3006,13 +3017,13 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 			// Edit row on edit button click
 $(document).on("click", ".edit-sale-edit", function(){
 	$(this).parents("tr").find("td:not(:last-child)").each(function(i){
-			if (i === 4) {
+			if (i === 5) {
 				$(this).html('<input type="text" style="width:80px;" class="form-control" value="' + $(this).text() + '">');
 			}
-			if (i === 6) {
+			if (i === 7) {
 				$(this).html('<input type="text" style="width:80px;" class="form-control" value="' + $(this).text() + '">');
 			}
-			if (i === 8) {
+			if (i === 9) {
 				 $(this).html('<input type="text" style="width:80px;" class="form-control" value="' + $(this).text() + '">');
 			}
 
@@ -3068,24 +3079,23 @@ $('#edit-sale-submit').on('submit',function(e){
 					'dcdetailid': ""
 				};
 				$tds.each(function(i, el){
-					if (i === 0) {
+					if (i === 1) {
 							row["id"] = ($(this).text());
 					}
-					else if (i === 4) {
+					else if (i === 5) {
 							row["quantity"] = ($(this).text());
 					}
-					else if (i === 6) {
+					else if (i === 7) {
 							row["price"] = ($(this).text());
 					}
-					else if (i === 8) {
+					else if (i === 9) {
 							row["sales_tax"] = ($(this).text());
 					}
-					else if (i === 11) {
+					else if (i === 12) {
 							row["dc_no"] = ($(this).text());
 					}
-					else if (i === 12) {
+					else if (i === 14) {
 							row["dcdetailid"] = ($(this).text());
-							console.log($(this).text());
 					}
 				});
 				data.push(row);
@@ -3236,6 +3246,7 @@ $('#edit-sale-submit').on('submit',function(e){
 					 // total_amount = (type[0].fields['unit_price'] * type[0].fields['quantity']);
 					 for (var i = 0; i < data.row.length; i++) {
 						var row = '<tr>' +
+								'<td>'+count+'</td>'+
 								'<td style="display:none;">'+data.row[i][2]+'</td>'+
 								'<td id="get_item_code">'+data.row[i][3]+'</td>' +
 								'<td>'+data.row[i][4]+'</td>' +
@@ -3326,10 +3337,10 @@ $('#edit-sale-submit').on('submit',function(e){
 			// Edit row on edit button click
 $(document).on("click", ".edit-sale-edit-ngst", function(){
 	$(this).parents("tr").find("td:not(:last-child)").each(function(i){
-			if (i === 4) {
+			if (i === 5) {
 				$(this).html('<input type="text" style="width:80px;" class="form-control" value="' + $(this).text() + '">');
 			}
-			if (i === 6) {
+			if (i === 7) {
 				$(this).html('<input type="text" style="width:80px;" class="form-control" value="' + $(this).text() + '">');
 			}
 });
@@ -3406,19 +3417,19 @@ $('#edit-sale-submit-ngst').on('submit',function(e){
 					'dcdetailid':""
 				};
 				$tds.each(function(i, el){
-					if (i === 0) {
+					if (i === 1) {
 							row["id"] = ($(this).text());
 					}
-					else if (i === 4) {
+					else if (i === 5) {
 							row["quantity"] = ($(this).text());
 					}
-					else if (i === 6) {
+					else if (i === 7) {
 							row["price"] = ($(this).text());
 					}
-					else if (i === 8) {
+					else if (i === 9) {
 							row["dc_no"] = ($(this).text());
 					}
-					else if (i === 9) {
+					else if (i === 10) {
 							row["dcdetailid"] = ($(this).text());
 					}
 				});
@@ -4502,17 +4513,19 @@ $.fn.extend({
 			var currrow = $(this).closest('tr');
 			var id = currrow.find('td:eq(1)').text();
 			var account_title = currrow.find('td:eq(2)').text();
-			var parent_type = currrow.find('td:eq(3)').text();
-			var opening_balance = currrow.find('td:eq(4)').text();
-			var phone_no = currrow.find('td:eq(5)').text();
-			var email_address = currrow.find('td:eq(6)').text();
-			var ntn = currrow.find('td:eq(7)').text();
-			var stn = currrow.find('td:eq(8)').text();
-			var cnic = currrow.find('td:eq(9)').text();
-			var address = currrow.find('td:eq(10)').text();
-			var remarks = currrow.find('td:eq(11)').text();
-			var credit_limit = currrow.find('td:eq(12)').text();
+			var is_active = currrow.find('td:eq(3)').text();
+			var parent_type = currrow.find('td:eq(4)').text();
+			var opening_balance = currrow.find('td:eq(5)').text();
+			var phone_no = currrow.find('td:eq(7)').text();
+			var email_address = currrow.find('td:eq(7)').text();
+			var ntn = currrow.find('td:eq(8)').text();
+			var stn = currrow.find('td:eq(9)').text();
+			var cnic = currrow.find('td:eq(10)').text();
+			var address = currrow.find('td:eq(11)').text();
+			var remarks = currrow.find('td:eq(12)').text();
+			var credit_limit = currrow.find('td:eq(13)').text();
 			console.log(id);
+			console.log(phone_no);
 			if (opening_balance > 0) {
 				$('#debit').prop("checked", true);
 			} else {
@@ -4521,6 +4534,7 @@ $.fn.extend({
 			opening_balance = Math.abs(opening_balance);
 			$('#id').val(id);
 			$('#account_title').val(account_title);
+			$('#is_active').val(is_active);
 			$('#opening_balance').val(opening_balance);
 			$('#phone_no').val(phone_no);
 			$('#email_address').val(email_address);
@@ -4580,6 +4594,10 @@ $.fn.extend({
 		 $("#modal_delete_button").attr("href", `/transaction/bank_payment_voucher/delete/${this.id}`);
 	 })
 
+	 $(".delete_sale_return").on('click',function(){
+		 $("#modal_delete_button").attr("href", `/transaction/sale/return/delete/${this.id}`);
+	 })
+
 	 $(".delete-cpv-summary").on('click',function(){
 		 $("#modal_delete_button").attr("href", `/transaction/cash_payment_voucher/delete/${this.id}`);
 	 })
@@ -4602,6 +4620,7 @@ $.fn.extend({
 				}
 			})
 	 });
+
 
 		document.getElementById('box').onchange = function() {
 		document.getElementById('invoice_no').disabled = !this.checked;

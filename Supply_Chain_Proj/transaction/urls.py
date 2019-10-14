@@ -83,5 +83,5 @@ urlpatterns = [
     path('branches/', views.multi_branches, name='multi-branches'),
     path('branches/new', views.new_multi_branches, name='new-multi-branches'),
     path('branches/edit/<pk>', views.edit_multi_branches, name='edit-multi-branches'),
-    # path('branches/delete/<pk>', views.delete_multi_branches, name='delete-multi-branches'),
+    path('branches/delete/<pk>', views.delete_multi_branches, name='delete-multi-branches'),
 ]

@@ -56,6 +56,7 @@ class COAUpdateForm(forms.ModelForm):
     Address = forms.CharField(required=False)
     remarks = forms.CharField(required=False)
     credit_limit = forms.DecimalField(required=False)
+    active = forms.BooleanField(required=False)
 
     class Meta:
         model = ChartOfAccount
@@ -70,5 +71,6 @@ class COAUpdateForm(forms.ModelForm):
                   'cnic',
                   'Address',
                   'remarks',
-                  'credit_limit'
+                  'credit_limit',
+                  'active'
                   ]

@@ -1424,7 +1424,7 @@ def new_sale(request):
                                             ) As tblData
                                             Inner Join customer_dcheadercustomer HD on  HD.id = tblData.dc_id_id
                                             Where RemainingQuantity > 0 AND accountid = %s AND HD.company_id_id = %s AND HD.branch_id_id = %s ''',
-                                             [get_account.id, company.id, branch.id])
+                                             [get_account.id, company.id, branch.branch_id])
                 customer_dc = customer_dc.fetchall()
                 print("here", customer_dc)
                 return JsonResponse({'customer_dc': customer_dc})
@@ -1446,14 +1446,15 @@ def new_sale(request):
                                 group by dc_id_id,COA.id,COA.account_title,IP.product_code,IP.product_name
                                 ) As tblData
                                 Inner Join customer_dcheadercustomer HD on  HD.id = tblData.dc_id_id
-                                Where RemainingQuantity > 0 AND HD.company_id_id = %s AND HD.branch_id_id = %s ''', [company.id])
+                                Where RemainingQuantity > 0 AND HD.company_id_id = %s AND HD.branch_id_id = %s ''',
+                                [company.id, branch.branch_id])
         all_dc = all_dc.fetchall()
         return JsonResponse({'all_dc': all_dc})
 
     customer = Q(account_id="100")
     supplier = Q(account_id="200")
     all_accounts = ChartOfAccount.objects.filter(customer | supplier).all()
-    get_last_sale_no = SaleHeader.objects.filter(company_id=company.id, branch_id=branch.id).last()
+    get_last_sale_no = SaleHeader.objects.filter(company_id=company.id, branch_id=branch.branch_id).last()
 
     if company.id == 1:
         if get_last_sale_no:
@@ -1547,7 +1548,7 @@ def new_sale(request):
         cart = json.loads(request.POST.get('cartage'))
         items = json.loads(request.POST.get('items'))
         sale_header.save()
-        header_id = SaleHeader.objects.filter(company_id=company.id, branch_id=branch.id).get(sale_no=sale_id)
+        header_id = SaleHeader.objects.filter(company_id=company.id, branch_id=branch.branch_id).get(sale_no=sale_id)
         for value in cart:
             cartage_ = Cartage_and_Po(cartage=value["cartage_amount"], po_no=value["po_no"], invoice_id=header_id.id)
             cartage_.save()
@@ -1573,11 +1574,13 @@ def new_sale(request):
         if payment_method == 'Cash':
             tran1 = Transactions(refrence_id=header_id, refrence_date=date, account_id=cash_in_hand,
                                  tran_type="Sale Invoice", amount=total_amount, date=date, remarks=sale_id,
-                                 ref_inv_tran_id=0, ref_inv_tran_type="", company_id=company, user_id=request.user, branch_id=branch)
+                                 ref_inv_tran_id=0, ref_inv_tran_type="", company_id=company, user_id=request.user,
+                                 branch_id=branch)
             tran1.save()
             tran2 = Transactions(refrence_id=header_id, refrence_date=date, account_id=account_id,
                                  tran_type="Sale Invoice", amount=-abs(total_amount), date=date, remarks=sale_id,
-                                 ref_inv_tran_id=0, ref_inv_tran_type="", company_id=company, user_id=request.user, branch_id=branch)
+                                 ref_inv_tran_id=0, ref_inv_tran_type="", company_id=company, user_id=request.user,
+                                 branch_id=branch)
             tran2.save()
         else:
             sale_account = ChartOfAccount.objects.get(account_title='Sales')
@@ -2601,6 +2604,8 @@ def edit_sale_return(request, pk):
 @login_required
 @user_passes_test(allow_coa_display)
 def chart_of_account(request):
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -2635,7 +2640,7 @@ def chart_of_account(request):
             opening_balance = -abs(Decimal(opening_balance))
         coa = ChartOfAccount(account_title=account_title, parent_id=account_type, opening_balance=opening_balance,
                              phone_no=phone_no, email_address=email_address, ntn=ntn, stn=stn, cnic=cnic,
-                             Address=address, remarks=remarks, credit_limit=credit_limits, account_id="100")
+                             Address=address, remarks=remarks, credit_limit=credit_limits, account_id="100", branch_id=branch)
         coa.save()
     return render(request, 'transaction/chart_of_account.html',
                   {'all_accounts': all_accounts, 'permission': permission, 'allow_customer_roles': allow_customer_roles,
@@ -2661,6 +2666,7 @@ def edit_chart_of_account(request):
         remarks = request.POST.get('remarks')
         op_type = request.POST.get('optradio')
         credit_limits = request.POST.get('credit_limits')
+        is_active = request.POST.get('is_active')
 
         if credit_limits is "":
             credit_limits = 0.00
@@ -2683,6 +2689,7 @@ def edit_chart_of_account(request):
         coa.Address = address
         coa.remarks = remarks
         coa.credit_limit = credit_limits
+        coa.is_active = is_active
         coa.save()
     return redirect('chart-of-account')
 
@@ -2776,7 +2783,7 @@ def journal_voucher(request):
     cursor = connection.cursor()
     get_last_tran_id = cursor.execute(
         '''select * from transaction_voucherheader where voucher_no LIKE '%%JV%%' AND company_id_id = %s AND branch_id_id = %sorder by voucher_no DESC LIMIT 1''',
-        [company.id, branch.id])
+        [company.id, branch.branch_id])
     get_last_tran_id = get_last_tran_id.fetchall()
 
     date = datetime.date.today()
@@ -2797,14 +2804,15 @@ def journal_voucher(request):
         account_title = account_info.account_title
         account_id = account_info.id
         return JsonResponse({'account_title': account_title, 'account_id': account_id})
-    all_invoices = SaleHeader.objects.filter(company_id=company.id).all()
+    all_invoices = SaleHeader.objects.filter(company_id=company.id, branch_id=branch.branch_id).all()
     if request.method == "POST":
         check = request.POST.get('check', False)
         doc_no = request.POST.get('doc_no', False)
         doc_date = request.POST.get('doc_date', False)
         description = request.POST.get('description', False)
         items = json.loads(request.POST.get('items', False))
-        invoice_id = SaleHeader.objects.filter(sale_no=doc_no, company_id=company.id, branch_id=branch.id).first()
+        invoice_id = SaleHeader.objects.filter(sale_no=doc_no, company_id=company.id,
+                                               branch_id=branch.branch_id).first()
         if invoice_id:
             invoice_id = invoice_id.id
         else:
@@ -2814,7 +2822,8 @@ def journal_voucher(request):
                                   cheque_no="-", cheque_date=doc_date, description=description, company_id=company,
                                   user_id=request.user, branch_id=branch)
         jv_header.save()
-        voucher_id = VoucherHeader.objects.filter(company_id=company.id, branch_id=branch.id).get(voucher_no=get_last_tran_id)
+        voucher_id = VoucherHeader.objects.filter(company_id=company.id, branch_id=branch.branch_id).get(
+            voucher_no=get_last_tran_id)
         for value in items:
             account_id = ChartOfAccount.objects.get(account_title=value["account_title"])
             if value["debit"] > "0" and value["debit"] > "0.00":
@@ -2823,13 +2832,14 @@ def journal_voucher(request):
                                          amount=abs(float(value["debit"])),
                                          date=datetime.date.today(), remarks=description, account_id=account_id,
                                          ref_inv_tran_id=invoice_id, ref_inv_tran_type='JV ST',
-                                         voucher_id=voucher_id.id, company_id=company, user_id=request.user, branch_id=branch)
+                                         voucher_id=voucher_id.id, company_id=company, user_id=request.user,
+                                         branch_id=branch)
                 else:
                     tran1 = Transactions(refrence_id=0, refrence_date=doc_date, tran_type='',
                                          amount=abs(float(value["debit"])),
                                          date=datetime.date.today(), remarks=description, account_id=account_id,
                                          ref_inv_tran_id=doc_no, ref_inv_tran_type='JV', voucher_id=voucher_id.id,
-                                         company_id=company, user_id=request.user)
+                                         company_id=company, user_id=request.user, branch_id=branch)
                 tran1.save()
                 jv_detail1 = VoucherDetail(account_id=account_id, debit=abs(float(value["debit"])), credit=0.00,
                                            header_id=voucher_id, invoice_id=invoice_id)
@@ -2841,13 +2851,14 @@ def journal_voucher(request):
                                          amount=-abs(float(value["credit"])),
                                          date=datetime.date.today(), remarks=description, account_id=account_id,
                                          ref_inv_tran_id=invoice_id, ref_inv_tran_type='JV ST',
-                                         voucher_id=voucher_id.id, company_id=company, user_id=request.user)
+                                         voucher_id=voucher_id.id, company_id=company, user_id=request.user,
+                                         branch_id=branch)
                 else:
                     tran2 = Transactions(refrence_id=0, refrence_date=doc_date, tran_type='',
                                          amount=-abs(float(value["credit"])),
                                          date=datetime.date.today(), remarks=description, account_id=account_id,
                                          ref_inv_tran_id=doc_no, ref_inv_tran_type='JV', voucher_id=voucher_id.id,
-                                         company_id=company, user_id=request.user)
+                                         company_id=company, user_id=request.user, branch_id=branch)
                 tran2.save()
                 jv_detail2 = VoucherDetail(account_id=account_id, debit=0.00, credit=-abs(float(value["credit"])),
                                            header_id=voucher_id, invoice_id=invoice_id)
@@ -2866,7 +2877,9 @@ def journal_voucher(request):
 def edit_journal_voucher(request, pk):
     company = request.session['company']
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -2883,8 +2896,10 @@ def edit_journal_voucher(request, pk):
     all_invoices = SaleHeader.objects.filter(company).all()
     if request.method == "POST":
         company = request.session['company']
+        branch = request.session['branch']
+        branch = Branch.objects.get(branch_id=branch)
         company = Company_info.objects.get(id=company)
-        company = Q(company_id=company)
+        company = Q(company_id=company, branch_id=branch)
         jv_detail.delete()
         ref_inv_tran_type = Q(ref_inv_tran_type="JV")
         voucher_id = Q(voucher_id=pk)
@@ -2903,6 +2918,8 @@ def edit_journal_voucher(request, pk):
         jv_header.save()
         voucher_id = VoucherHeader.objects.get(voucher_no=tran_id)
         company = request.session['company']
+        branch = request.session['branch']
+        branch = Branch.objects.get(branch_id=branch)
         company = Company_info.objects.get(id=company)
         for value in items:
             header_id = VoucherHeader.objects.get(id=pk)
@@ -2912,7 +2929,7 @@ def edit_journal_voucher(request, pk):
                                      amount=abs(float(value["debit"])),
                                      date=datetime.date.today(), remarks=description, account_id=account_id,
                                      ref_inv_tran_id=doc_no, ref_inv_tran_type='JV', voucher_id=voucher_id.id,
-                                     company_id=company, user_id=request.user)
+                                     company_id=company, user_id=request.user, branch_id=branch)
                 tran1.save()
                 jv_detail1 = VoucherDetail(account_id=account_id, debit=abs(float(value["debit"])), credit=0.00,
                                            header_id=header_id, invoice_id=0)
@@ -2924,7 +2941,7 @@ def edit_journal_voucher(request, pk):
                                      amount=-abs(float(value["credit"])),
                                      date=datetime.date.today(), remarks=description, account_id=account_id,
                                      ref_inv_tran_id=doc_no, ref_inv_tran_type='JV', voucher_id=voucher_id.id,
-                                     company_id=company, user_id=request.user)
+                                     company_id=company, user_id=request.user, branch_id=branch)
                 tran2.save()
                 jv_detail2 = VoucherDetail(account_id=account_id, debit=0.00, credit=-abs(float(value["credit"])),
                                            header_id=header_id, invoice_id=0)
@@ -2943,7 +2960,9 @@ def edit_journal_voucher(request, pk):
 def delete_journal_voucher(request, pk):
     company = request.session['company']
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -2962,8 +2981,10 @@ def delete_journal_voucher(request, pk):
 @user_passes_test(allow_crv_print)
 def jv_pdf(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company_info = Company_info.objects.filter(id=company).all()
-    company = Company_info.objects.get(id=company)
+    company = Company_info.objects.get(id=company, branch_id=branch)
     company = Q(company_id=company)
     header = VoucherHeader.objects.filter(company, id=pk).first()
     detail = VoucherDetail.objects.filter(header_id=header.id).all()
@@ -2985,8 +3006,10 @@ def jv_pdf(request, pk):
 @user_passes_test(allow_crv_display)
 def view_cash_receiving(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -3010,11 +3033,13 @@ def cash_receiving_voucher(request):
     allow_inventory_roles = inventory_roles(request.user)
     permission = crv_roles(request.user)
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
     cursor = connection.cursor()
     all_vouchers = cursor.execute(
-        f'''select * from transaction_voucherheader where voucher_no LIKE '%CRV%' AND company_id_id = {company.id} '''.format(
-            company=company.id))
+        f'''select * from transaction_voucherheader where voucher_no LIKE '%CRV%' AND company_id_id = {company.id} AND branch_id_id = {branch.branch_id} '''.format(
+            company=company.id, branch=branch.branch_id))
     all_vouchers = all_vouchers.fetchall()
     return render(request, 'transaction/cash_receiving_voucher.html',
                   {'all_vouchers': all_vouchers, 'permission': permission, 'allow_customer_roles': allow_customer_roles,
@@ -3030,6 +3055,8 @@ def new_cash_receiving_voucher(request):
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
     allow_inventory_roles = inventory_roles(request.user)
     cursor = connection.cursor()
@@ -3053,7 +3080,8 @@ def new_cash_receiving_voucher(request):
     supplier = Q(account_id="100")
     customer = Q(account_id="200")
     all_accounts = ChartOfAccount.objects.filter(supplier | customer).all()
-    all_invoices = SaleHeader.objects.filter(payment_method="Credit", company_id=company.id).all()
+    all_invoices = SaleHeader.objects.filter(payment_method="Credit", company_id=company.id,
+                                             branch_id=branch.branch_id).all()
     user = request.user
     if account_name:
         if check == "1":
@@ -3171,7 +3199,9 @@ def new_cash_receiving_voucher(request):
 def delete_cash_receiving(request, pk):
     company = request.session['company']
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -3189,8 +3219,10 @@ def delete_cash_receiving(request, pk):
 @user_passes_test(allow_brv_display)
 def view_bank_receiving(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -3209,6 +3241,8 @@ def view_bank_receiving(request, pk):
 @user_passes_test(allow_brv_display)
 def bank_receiving_voucher(request):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
@@ -3217,8 +3251,8 @@ def bank_receiving_voucher(request):
     cursor = connection.cursor()
     permission = brv_roles(request.user)
     all_vouchers = cursor.execute(
-        '''select * from transaction_voucherheader where voucher_no LIKE '%BRV%' AND company_id_id = {company} '''.format(
-            company=company.id))
+        '''select * from transaction_voucherheader where voucher_no LIKE '%BRV%' AND company_id_id = {company} AND branch_id_id = {branch} '''.format(
+            company=company.id, branch=branch.branch_id))
     all_vouchers = all_vouchers.fetchall()
     return render(request, 'transaction/bank_receiving_voucher.html',
                   {'all_vouchers': all_vouchers, 'permission': permission, 'allow_customer_roles': allow_customer_roles,
@@ -3234,8 +3268,10 @@ def new_bank_receiving_voucher(request):
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_inventory_roles = inventory_roles(request.user)
     cursor = connection.cursor()
     get_last_tran_id = cursor.execute('''select * from transaction_voucherheader where voucher_no LIKE '%BRV%'
@@ -3336,6 +3372,8 @@ def new_bank_receiving_voucher(request):
             return JsonResponse({'pi': pi, 'bank_account': bank_account, 'account_id': account_id.account_id})
     if request.method == "POST":
         company = request.session['company']
+        branch = request.session['branch']
+        branch = Branch.objects.get(branch_id=branch)
         company = Company_info.objects.get(id=company)
         invoice_no = request.POST.get('invoice_no', False)
         doc_date = request.POST.get('doc_date', False)
@@ -3348,7 +3386,7 @@ def new_bank_receiving_voucher(request):
         items = json.loads(request.POST.get('items', False))
         jv_header = VoucherHeader(voucher_no=get_last_tran_id, doc_no=invoice_no, doc_date=doc_date,
                                   cheque_no=cheque_no, cheque_date=cheque_date, description=description,
-                                  company_id=company, user_id=request.user)
+                                  company_id=company, user_id=request.user, branch_id=branch)
         jv_header.save()
         voucher_id = VoucherHeader.objects.get(voucher_no=get_last_tran_id)
         for value in items:
@@ -3361,12 +3399,12 @@ def new_bank_receiving_voucher(request):
             tran1 = Transactions(refrence_id=0, refrence_date=doc_date, tran_type='', amount=amount,
                                  date=date, remarks=description, account_id=bank_account, ref_inv_tran_id=invoice_no.id,
                                  ref_inv_tran_type="Sale BRV", voucher_id=voucher_id.id, company_id=company,
-                                 user_id=request.user)
+                                 user_id=request.user, branch_id= branch)
             tran1.save()
             tran2 = Transactions(refrence_id=0, refrence_date=doc_date, tran_type='', amount=-abs(amount),
                                  date=date, remarks=description, account_id=account_id, ref_inv_tran_id=invoice_no.id,
                                  ref_inv_tran_type="Sale BRV", voucher_id=voucher_id.id, company_id=company,
-                                 user_id=request.user)
+                                 user_id=request.user, branch_id=branch)
             tran2.save()
             header_id = VoucherHeader.objects.get(voucher_no=get_last_tran_id)
             jv_detail1 = VoucherDetail(account_id=bank_account, debit=amount, credit=0.00, header_id=header_id,
@@ -3388,8 +3426,10 @@ def new_bank_receiving_voucher(request):
 @user_passes_test(allow_brv_delete)
 def delete_bank_receiving(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch =Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -3407,8 +3447,10 @@ def delete_bank_receiving(request, pk):
 @user_passes_test(allow_bpv_display)
 def view_bank_payment(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -3427,6 +3469,8 @@ def view_bank_payment(request, pk):
 @user_passes_test(allow_bpv_display)
 def bank_payment_voucher(request):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
@@ -3435,8 +3479,8 @@ def bank_payment_voucher(request):
     permission = bpv_roles(request.user)
     cursor = connection.cursor()
     all_vouchers = cursor.execute(
-        '''select * from transaction_voucherheader where voucher_no LIKE '%BPV%' AND company_id_id = {company}'''.format(
-            company=company.id))
+        '''select * from transaction_voucherheader where voucher_no LIKE '%BPV%' AND company_id_id = {company} AND branch_id_id = {branch}'''.format(
+            company=company.id, branch=branch.branch_id))
     all_vouchers = all_vouchers.fetchall()
     return render(request, 'transaction/bank_payment_voucher.html',
                   {'all_vouchers': all_vouchers, 'permission': permission, 'allow_customer_roles': allow_customer_roles,
@@ -3452,8 +3496,10 @@ def new_bank_payment_voucher(request):
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_inventory_roles = inventory_roles(request.user)
     cursor = connection.cursor()
     get_last_tran_id = cursor.execute('''select * from transaction_voucherheader where voucher_no LIKE '%BPV%'
@@ -3553,6 +3599,8 @@ def new_bank_payment_voucher(request):
             return JsonResponse({'pi': pi, 'bank_account': bank_account, 'account_id': account_id.account_id})
     if request.method == "POST":
         company = request.session['company']
+        branch = request.session['branch']
+        branch = Branch.objects.get(branch_id=branch)
         company = Company_info.objects.get(id=company)
         invoice_no = request.POST.get('invoice_no', False)
         doc_date = request.POST.get('doc_date', False)
@@ -3565,7 +3613,7 @@ def new_bank_payment_voucher(request):
         items = json.loads(request.POST.get('items', False))
         jv_header = VoucherHeader(voucher_no=get_last_tran_id, doc_no=invoice_no, doc_date=doc_date,
                                   cheque_no=cheque_no, cheque_date=cheque_date, description=description,
-                                  company_id=company, user_id=request.user)
+                                  company_id=company, user_id=request.user, branch_id=branch)
         jv_header.save()
         voucher_id = VoucherHeader.objects.get(voucher_no=get_last_tran_id)
         for value in items:
@@ -3578,12 +3626,12 @@ def new_bank_payment_voucher(request):
             tran1 = Transactions(refrence_id=0, refrence_date=doc_date, tran_type='', amount=-abs(amount),
                                  date=date, remarks=description, account_id=bank_account, ref_inv_tran_id=invoice_no.id,
                                  ref_inv_tran_type="Purchase BPV", voucher_id=voucher_id.id, company_id=company,
-                                 user_id=request.user)
+                                 user_id=request.user, branch_id=branch)
             tran1.save()
             tran2 = Transactions(refrence_id=0, refrence_date=doc_date, tran_type='', amount=amount,
                                  date=date, remarks=description, account_id=account_id, ref_inv_tran_id=invoice_no.id,
                                  ref_inv_tran_type="Purchase BPV", voucher_id=voucher_id.id, company_id=company,
-                                 user_id=request.user)
+                                 user_id=request.user, branch_id=branch)
             tran2.save()
             header_id = VoucherHeader.objects.get(voucher_no=get_last_tran_id)
             jv_detail1 = VoucherDetail(account_id=bank_account, debit=0.00, credit=-abs(amount), header_id=header_id,
@@ -3605,8 +3653,10 @@ def new_bank_payment_voucher(request):
 @user_passes_test(allow_bpv_delete)
 def delete_bank_payment(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -3624,7 +3674,9 @@ def delete_bank_payment(request, pk):
 @user_passes_test(allow_cpv_display)
 def view_cash_payment(request, pk):
     company = request.session['company']
-    company = Company_info.objects.get(id=company)
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
+    company = Company_info.objects.get(id=company, branch_id=branch)
     company = Q(company_id=company)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
@@ -3644,6 +3696,8 @@ def view_cash_payment(request, pk):
 @user_passes_test(allow_cpv_display)
 def cash_payment_voucher(request):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
@@ -3652,8 +3706,8 @@ def cash_payment_voucher(request):
     permission = cpv_roles(request.user)
     cursor = connection.cursor()
     all_vouchers = cursor.execute(
-        '''select * from transaction_voucherheader where voucher_no LIKE '%CPV%' AND company_id_id = {company}'''.format(
-            company=company.id))
+        '''select * from transaction_voucherheader where voucher_no LIKE '%CPV%' AND company_id_id = {company} AND branch_id_id = {branch}'''.format(
+            company=company.id, branch=branch.branch_id))
     all_vouchers = all_vouchers.fetchall()
     return render(request, 'transaction/cash_payment_voucher.html',
                   {'all_vouchers': all_vouchers, 'permission': permission, 'allow_customer_roles': allow_customer_roles,
@@ -3666,8 +3720,10 @@ def cash_payment_voucher(request):
 @user_passes_test(allow_cpv_add)
 def new_cash_payment_voucher(request):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -3697,6 +3753,7 @@ def new_cash_payment_voucher(request):
     all_invoices = PurchaseHeader.objects.filter(company).all()
     user = request.user
     company = request.session['company']
+    branch = request.session['branch']
     if account_name:
         if check == "1":
             id = ChartOfAccount.objects.filter(account_title=account_name).first()
@@ -3765,6 +3822,7 @@ def new_cash_payment_voucher(request):
             pi = pi.fetchall()
             return JsonResponse({'pi': pi})
     company = Company_info.objects.get(id=company)
+    branch = Branch.objects.get(branch_id=branch)
     if request.method == "POST":
         invoice_no = request.POST.get('invoice_no', False)
         doc_date = request.POST.get('doc_date', False)
@@ -3774,7 +3832,7 @@ def new_cash_payment_voucher(request):
         items = json.loads(request.POST.get('items', False))
         jv_header = VoucherHeader(voucher_no=get_last_tran_id, doc_no=invoice_no, doc_date=doc_date, cheque_no="-",
                                   cheque_date=doc_date, description=description, company_id=company,
-                                  user_id=request.user)
+                                  user_id=request.user, branch_id=branch)
         jv_header.save()
         voucher_id = VoucherHeader.objects.get(voucher_no=get_last_tran_id)
         for value in items:
@@ -3786,11 +3844,11 @@ def new_cash_payment_voucher(request):
 
             tran1 = Transactions(refrence_id=0, refrence_date=doc_date, tran_type='', amount=-abs(amount),
                                  date=date, remarks=description, account_id=cash_account, ref_inv_tran_id=invoice_no.id,
-                                 ref_inv_tran_type="Purchase CPV", voucher_id=voucher_id.id)
+                                 ref_inv_tran_type="Purchase CPV", voucher_id=voucher_id.id, company_id=company, branch_id=branch)
             tran1.save()
             tran2 = Transactions(refrence_id=0, refrence_date=doc_date, tran_type='', amount=amount,
                                  date=date, remarks=description, account_id=account_id, ref_inv_tran_id=invoice_no.id,
-                                 ref_inv_tran_type="Purchase CPV", voucher_id=voucher_id.id)
+                                 ref_inv_tran_type="Purchase CPV", voucher_id=voucher_id.id, company_id=company, branch_id=branch)
             tran2.save()
             header_id = VoucherHeader.objects.get(voucher_no=get_last_tran_id)
             jv_detail1 = VoucherDetail(account_id=cash_account, debit=0.00, credit=-abs(amount), header_id=header_id,
@@ -3811,8 +3869,10 @@ def new_cash_payment_voucher(request):
 @user_passes_test(allow_cpv_delete)
 def delete_cash_payment(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     ref_inv_tran_type = Q(ref_inv_tran_type="Purchase CPV")
     voucher_id = Q(voucher_id=pk)
     Transactions.objects.filter(company, ref_inv_tran_type, voucher_id).all().delete()
@@ -3826,8 +3886,10 @@ def delete_cash_payment(request, pk):
 @user_passes_test(allow_crv_print)
 def crv_pdf(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company_info = Company_info.objects.filter(id=company).all()
-    company = Company_info.objects.get(id=company)
+    company = Company_info.objects.get(id=company, branch_id=branch)
     company = Q(company_id=company)
     header = VoucherHeader.objects.filter(company, id=pk).first()
     details = VoucherDetail.objects.filter(debit=0, header_id=header.id).first()
@@ -3855,9 +3917,11 @@ def crv_pdf(request, pk):
 @user_passes_test(allow_cpv_print)
 def cpv_pdf(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
     company_info = Company_info.objects.filter(id=company.id).all()
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     header = VoucherHeader.objects.filter(company, id=pk).first()
     details = VoucherDetail.objects.filter(credit=0, header_id=header.id).first()
     cursor = connection.cursor()
@@ -3884,9 +3948,11 @@ def cpv_pdf(request, pk):
 @user_passes_test(allow_bpv_print)
 def bpv_pdf(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
     company_info = Company_info.objects.filter(id=company.id).all()
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     header = VoucherHeader.objects.filter(company, id=pk).first()
     details = VoucherDetail.objects.filter(credit=0, header_id=header.id).first()
     cursor = connection.cursor()
@@ -3914,9 +3980,11 @@ def bpv_pdf(request, pk):
 @user_passes_test(allow_brv_print)
 def brv_pdf(request, pk):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company_info = Company_info.objects.filter(id=company).all()
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     header = VoucherHeader.objects.filter(company, id=pk).first()
     details = VoucherDetail.objects.filter(debit=0, header_id=header.id).first()
     cursor = connection.cursor()
@@ -3945,6 +4013,7 @@ def brv_pdf(request, pk):
 @login_required
 def account_ledger(request):
     company = request.session['company']
+    branch = request.session['branch']
     if request.method == "POST":
         debit_amount = 0
         credit_amount = 0
@@ -4081,8 +4150,10 @@ def trial_balance(request):
 @login_required
 def sale_detail(request):
     company = request.session['company']
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Company_info.objects.get(id=company)
-    company = Q(company_id=company)
+    company = Q(company_id=company, branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -4129,6 +4200,7 @@ def sale_detail(request):
 @login_required
 def sale_detail_item_wise(request):
     company = request.session['company']
+    branch = request.session['branch']
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -4244,6 +4316,7 @@ def sale_summary_item_wise(request):
 @login_required
 def sales_tax_invoice(request, pk):
     company = request.session["company"]
+    branch = request.session['branch']
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -4541,7 +4614,7 @@ def new_multi_branches(request):
 @login_required
 @user_passes_test(Is_superuser)
 def edit_multi_branches(request, pk):
-    branch = Branch.objects.get(id=pk)
+    branch = Branch.objects.get(branch_id=pk)
     if request.method == 'POST':
         form = BranchUpdateForm(request.POST, instance=branch)
         if form.is_valid():
@@ -4551,6 +4624,14 @@ def edit_multi_branches(request, pk):
     else:
         form = BranchUpdateForm(instance=branch)
     return render(request, 'transaction/edit_multi_branches.html', {'form': form})
+
+
+@login_required
+@user_passes_test(Is_superuser)
+def delete_multi_branches(request, pk):
+    Branch.objects.filter(branch_id=pk).all().delete()
+    messages.add_message(request, messages.SUCCESS, "Branch Deleted.")
+    return redirect('multi-branches')
 
 
 @login_required

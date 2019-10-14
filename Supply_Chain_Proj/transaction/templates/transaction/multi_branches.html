@@ -36,9 +36,10 @@
                         <td>Admin</td>
                         <td>{{ value.email }}</td>
                         <td>
-                            <a class="edit_list" href="{% url 'edit-multi-branches' pk=value.branch_id %}" data-toggle=""><i
+                            <a class="edit_list" href="{% url 'edit-multi-branches' pk=value.branch_id %}"
+                               data-toggle=""><i
                                     class="material-icons">&#xE254;</i></a>
-                            <a class="delete_purchase" href="#"
+                            <a class="delete_purchase" href="{% url 'delete-multi-branches' pk=value.branch_id %}}"
                                data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                         </td>
                     </tr>
