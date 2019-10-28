@@ -98,7 +98,9 @@ class SaleDetail(models.Model):
     retail_price = models.DecimalField(max_digits=8, decimal_places=2)
     sales_tax = models.DecimalField(max_digits=8, decimal_places=2)
     dc_ref = models.CharField(max_length=100)
+    po_ref = models.CharField(max_length=100)
     dcdetailid = models.CharField(max_length=100)
+    podetailid = models.CharField(max_length=100)
     total = models.DecimalField(max_digits=8, decimal_places=2)
     sale_id = models.ForeignKey(SaleHeader, on_delete=models.CASCADE)
 

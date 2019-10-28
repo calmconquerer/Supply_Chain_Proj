@@ -6,7 +6,7 @@ from .models import (PurchaseHeader, PurchaseDetail, SaleHeader, SaleDetail, Cha
 from user.models import Company_info
 from .forms import CompanyUpdateForm, COAUpdateForm, BranchUpdateForm
 from inventory.models import Add_products
-from customer.models import DcHeaderCustomer, DcDetailCustomer
+from customer.models import DcHeaderCustomer, DcDetailCustomer, PoHeaderCustomer
 from django.core import serializers
 from django.db.models import Q, Count, Sum
 import json, datetime
@@ -1426,10 +1426,25 @@ def new_sale(request):
                                             Where RemainingQuantity > 0 AND accountid = %s AND HD.company_id_id = %s AND HD.branch_id_id = %s ''',
                                              [get_account.id, company.id, branch.branch_id])
                 customer_dc = customer_dc.fetchall()
-                print("here", customer_dc)
-                return JsonResponse({'customer_dc': customer_dc})
+                customer_so = cursor.execute('''Select Distinct id,po_no,accountid,account_title From (
+                                            Select distinct po_id_id,COA.id As accountid,COA.account_title,IP.product_code,IP.product_name,
+                                            PO.Quantity As PoQuantity,ifnull(sum(SD.Quantity),0) As SaleQuantity,
+                                            (PO.Quantity-ifnull(Sum(SD.Quantity),0)) As RemainingQuantity
+                                            from customer_podetailcustomer PO
+                                            inner join customer_poheadercustomer HDPO on PO.po_id_id = HDPO.id
+                                            inner join transaction_chartofaccount COA on HDPO.account_id_id = COA.id
+                                            inner join inventory_add_products IP on PO.item_id_id = IP.id
+                                            Left Join transaction_saledetail SD on SD.po_ref = PO.po_id_id
+                                            And SD.item_id_id = IP.id
+                                            group by po_id_id,COA.id,COA.account_title,IP.product_code,IP.product_name
+                                            ) As tblData
+                                            Inner Join customer_poheadercustomer HD on  HD.id = tblData.po_id_id
+                                            Where RemainingQuantity > 0 AND accountid = %s AND HD.company_id_id = %s AND HD.branch_id_id = %s ''',
+                                             [get_account.id, company.id, branch.branch_id])
+                customer_so = customer_so.fetchall()
+                return JsonResponse({'customer_dc': customer_dc,'customer_so': customer_so})
         except ObjectDoesNotExist:
-            return JsonResponse({'customer_dc': 'False'})
+            return JsonResponse({'customer_dc': 'False','customer_so': 'False'})
 
     all_dc = request.POST.get('all_dc')
     if all_dc:
@@ -1450,6 +1465,7 @@ def new_sale(request):
                                 [company.id, branch.branch_id])
         all_dc = all_dc.fetchall()
         return JsonResponse({'all_dc': all_dc})
+
 
     customer = Q(account_id="100")
     supplier = Q(account_id="200")
@@ -1492,36 +1508,28 @@ def new_sale(request):
         row = data.fetchall()
         print(row)
         return JsonResponse({"row": row, 'dc_ref': header_id.id})
-    # get_item_code = request.POST.get('item_code', False)
-    # quantity = request.POST.get('quantity', False)
-    # if get_item_code:
-    #     cursor = connection.cursor()
-    #     cursor.execute('''Select item_code, item_name,Item_description,Unit,SUM(quantity) As qty From (
-    #                     Select 'Opening Stock' As TranType,Product_Code As Item_Code,Product_Name As Item_name,Product_desc As Item_description,Unit As unit,Opening_Stock as Quantity From inventory_add_products
-    #                     where product_code = %s
-    #                     union All
-    #                     Select 'Purchase' As TranType,Item_Code,Item_name,Item_description,unit,Quantity From transaction_purchasedetail
-    #                     where item_code = %s
-    #                     union All
-    #                     Select 'Purchase Return' As TranType,Item_Code,Item_name,Item_description,unit,Quantity * -1 From transaction_purchasereturndetail
-    #                     where item_code = %s
-    #                     union All
-    #                     Select 'Sale' As TranType,Item_Code,Item_name,Item_description,unit,Quantity * -1 From transaction_saledetail
-    #                     where item_code = %s
-    #                     union All
-    #                     Select 'Sale Return' As TranType,Item_Code,Item_name,Item_description,unit,Quantity  From transaction_salereturndetail
-    #                     where item_code = %s
-    #                     ) As tblTemp
-    #                     Group by Item_Code''',[get_item_code,get_item_code,get_item_code,get_item_code,get_item_code])
-    #     row = cursor.fetchall()
-    #     a = row[0][4]
-    #     b = quantity
-    #     if str(a) > str(b):
-    #         print(quantity)
-    #         print(row[0][4])
-    #         return JsonResponse({"message":"True"})
-    #     else:
-    #         return JsonResponse({"message":"False"})
+
+    so_code_sale = request.POST.get('so_code_sale', False)
+    if so_code_sale:
+        header_id = PoHeaderCustomer.objects.filter(company_id=company.id, branch_id = branch).get(po_no=so_code_sale)
+        data = cursor.execute('''Select * From (
+                            Select distinct SD.id as Sd_detail_id,po_id_id, IP.id,IP.product_code,IP.product_name, IP.product_desc, IP.unit,
+                            PO.Quantity As PoQuantity,
+                            ifnull(sum(SD.Quantity),0) As SaleQuantity,
+                            (PO.Quantity-ifnull(Sum(SD.Quantity),0)) As RemainingQuantity,PO.ID As podetailid
+                            from customer_podetailcustomer PO
+                            inner join inventory_add_products IP on IP.id = PO.item_id_id
+                            Left Join transaction_saledetail SD on SD.po_ref = PO.po_id_id
+                            AND SD.podetailid = PO.ID
+                            And SD.item_id_id = IP.id
+                            group by SD.id,PO.id
+                            ) As tblData
+                            Where RemainingQuantity > 0 And po_id_id = %s
+                            ''', [header_id.id])
+        row = data.fetchall()
+        return JsonResponse({"row": row, 'po_ref': header_id.id})
+
+
     if request.method == 'POST':
         sale_id = request.POST.get('sale_id', False)
         date = request.POST.get('date', False)
@@ -1565,7 +1573,7 @@ def new_sale(request):
             print(value["dcdetailid"])
             sale_detail = SaleDetail(item_id=item_id, quantity=value["quantity"], cost_price=value["price"],
                                      retail_price=0, sales_tax=value["sales_tax"], dc_ref=value["dc_no"],
-                                     dcdetailid=value["dcdetailid"], sale_id=header_id, total=amount)
+                                     dcdetailid=0,podetailid=value["dcdetailid"],sale_id=header_id, total=amount)
             sale_detail.save()
         total_amount = item_amount
         total_amount = total_amount + cartage_sum

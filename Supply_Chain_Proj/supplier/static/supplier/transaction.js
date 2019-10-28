@@ -1090,6 +1090,23 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 							 }
 					 });
 
+					 // var all_so = 'all_so';
+					 // req =	$.ajax({
+						// 	headers: { "X-CSRFToken": getCookie("csrftoken") },
+						// 	type: 'POST',
+						// 	url : '/transaction/sale/new/',
+						// 	data:{
+						// 		'all_so': all_so,
+						// 	},
+						// 	dataType: 'json'
+						// })
+						// .done(function fun(data){
+						// 	$('#so').html('');
+						// 		for (var j = 0; j < data.all_dc.length; j++) {
+						// 			 $("#so").append($("<option>").attr('value',data.all_dc[j][1]).text(data.all_dc[j][1]));
+						// 		}
+						// });
+
 					$('#customer_name_sale').on('focusout', function(){
 						var customer_name_sale = $('#customer_name_sale').val();
 						if (customer_name_sale) {
@@ -1104,13 +1121,23 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 							 })
 							 .done(function fun(data){
 								 $('#dc').html('');
+								 $('#so').html('');
 								 if (data.customer_dc === 'False') {
 									 alert("No Account found");
 								 }
 								 else {
-									 console.log(data.customer_dc);
 									 for (var j = 0; j < data.customer_dc.length; j++) {
 											$("#dc").append($("<option>").attr('value',data.customer_dc[j][1]).text(data.customer_dc[j][1]));
+									 }
+								 }
+
+								 if (data.customer_so === 'False') {
+									 alert("No Account found");
+								 }
+								 else {
+									 console.log("Hamza,",data.customer_so);
+									 for (var j = 0; j < data.customer_so.length; j++) {
+											$("#so").append($("<option>").attr('value',data.customer_so[j][1]).text(data.customer_so[j][1]));
 									 }
 								 }
 							 });
@@ -1140,6 +1167,7 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 					$(".add-item-sale").click(function(){
 						var item_code_sale = "";
 						var dc_code_sale = $('#dc_code_sale').val();
+						var so_code_sale = $('#so_code_sale').val();
 
 						if (item_code_sale !== "") {
 
@@ -1219,6 +1247,48 @@ $('#edit-purchase-submit-ngst').on('submit',function(e){
 							$("table tbody tr").eq(index + i+1).find(".edit-transaction-sale, .add-transaction-sale").toggle();
 									$('[data-toggle="tooltip"]').tooltip();
 									$('#dc_code_sale').val("");
+								 }
+							 });
+						}
+						else if (so_code_sale !== "") {
+							req =	$.ajax({
+								 headers: { "X-CSRFToken": getCookie("csrftoken") },
+								 type: 'POST',
+								 url : '/transaction/sale/new/',
+								 data:{
+									 'so_code_sale': so_code_sale,
+								 },
+								 dataType: 'json'
+							 })
+							 .done(function done(data){
+								 var index = $("table tbody tr:last-child").index();
+								 var j = 0;
+								 // total_amount = (type[0].fields['unit_price'] * type[0].fields['quantity']);
+								 for (var i = 0; i < data.row.length; i++) {
+									console.log(i, j);
+									var row = '<tr>' +
+											'<td >'+count+'</td>'+
+											'<td style="display:none;">'+data.row[i][2]+'</td>'+
+											'<td id="get_item_code">'+data.row[i][3]+'</td>' +
+											'<td>'+data.row[i][4]+'</td>' +
+											'<td id="desc" ><pre>'+data.row[i][5]+'</pre></td>' +
+											'<td id="quantity"><input type="text" style="width:80px;" class="form-control" value="'+data.row[i][9]+'"></td>' +
+											'<td>'+data.row[i][6]+'</td>' +
+											'<td id="price" ><input type="text" style="width:80px;" class="form-control" value=""></td>' +
+											'<td id="value_of_goods" >0.00</td>' +
+											'<td id="sales_tax"><input type="text" style="width:80px;" class="form-control" value="17"></td>' +
+											'<td id="sales_tax_amount">0.00</td>' +
+											'<td id="total" style="font-weight:bold;" class="sum"><b>0.00</b></td>' +
+											'<td style="display:none;">'+data.po_ref+'</td>' +
+											'<td style="display:none;">'+data.row[i][10]+'</td>' +
+								'<td><a class="add-transaction-sale" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit-transaction-sale" title="Edit" data-toggle="tooltip" id="edit_purchase"><i class="material-icons">&#xE254;</i></a><a class="delete-transaction-sale" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></td>' +
+									'</tr>';
+									count++;
+									j = i - 1;
+								$("#new-sale-table").append(row);
+							$("table tbody tr").eq(index + i+1).find(".edit-transaction-sale, .add-transaction-sale").toggle();
+									$('[data-toggle="tooltip"]').tooltip();
+									$('#so_code_sale').val("");
 								 }
 							 });
 						}

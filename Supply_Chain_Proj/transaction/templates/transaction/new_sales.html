@@ -56,17 +56,6 @@
     <li class="list-group-item">
     <div class="table-title">
         <div class="row">
-          <!-- <div class="form-group col-md-3">
-            <input type="text" list="item" placeholder="Enter Item Code here..." class="form-control form-control-sm" id="item_code_sale">
-          </div>
-          <datalist id="item">
-            {% for value in dc_detail %}
-            <option value="{{value.1}}">{{value.1}} | {{value.2}} | {{value.3}}</option>
-            {% endfor %}
-          </datalist>
-            <div style="margin-left:20px;">
-                <button type="button" class="btn btn-info add-item-sale"><i class="fa fa-plus"></i>Insert Item</button>
-            </div> -->
             <div class="form-group col-md-3">
               <input type="text" list="dc" placeholder="Enter Dc No here..." class="form-control form-control-sm" id="dc_code_sale">
             </div>
@@ -74,6 +63,18 @@
             </datalist>
               <div style="margin-left:20px;">
                   <button type="button" class="btn btn-info add-item-sale"><i class="fa fa-plus"></i>Insert Delivery Challan</button>
+              </div>
+        </div>
+    </div>
+    <div class="table-title">
+        <div class="row">
+            <div class="form-group col-md-3">
+              <input type="text" list="so" placeholder="Enter Sale Order No here..." class="form-control form-control-sm" id="so_code_sale">
+            </div>
+            <datalist id="so">
+            </datalist>
+              <div style="margin-left:20px;">
+                  <button type="button" class="btn btn-info add-item-sale"><i class="fa fa-plus"></i>Insert Sale Order</button>
               </div>
         </div>
     </div>

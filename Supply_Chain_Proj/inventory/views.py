@@ -142,7 +142,6 @@ def add_product(request):
     if id:
         sub_categories_list = SubCategory.objects.filter(main_category_id=id).all()
         list = serializers.serialize('json', sub_categories_list)
-        print("Hamza")
         return JsonResponse({"list": list})
     serial_no = 0
     allow_customer_roles = customer_roles(request.user)
@@ -184,7 +183,7 @@ def add_product(request):
                                         product_desc=value["item_description"], unit=value["unit"], size=value["size"],
                                         type="", opening_stock=value["opening_stock"], user_id=request.user,
                                         main_category_id=main_category_id, sub_category_id=sub_category_id,
-                                        main_category=main_category_id.main, sub_category=sub_category_id.sub)
+                                        main_category=main_category_id.main, sub_category=sub_category_id.sub, branch_id = branch)
             new_products.save()
             serial_no = int(serial_no) + 1
         return JsonResponse({"result": "success"})
@@ -288,13 +287,15 @@ def categories(request):
 @login_required
 def main_categories(request):
     last_code = Category.objects.last()
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id = branch)
     if last_code:
         last_code = int(last_code.category_code) + 1
     else:
         last_code = 101
     if request.method == "POST":
         main_category_name = request.POST.get('main_category_name')
-        add_main_category = Category(category_code=last_code, main=main_category_name)
+        add_main_category = Category(category_code=last_code, main=main_category_name, branch_id = branch, user_id = request.user)
         add_main_category.save()
     return redirect('categories')
 
@@ -319,6 +320,8 @@ def edit_main_categories(request):
 
 @login_required
 def sub_categories(request):
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id = branch)
     if request.method == "POST":
         main_category_id = request.POST.get('main_category')
         sub_category_name = request.POST.get('sub_category_name')
@@ -329,7 +332,7 @@ def sub_categories(request):
         else:
             last_code = int(str(main_category_code.category_code) + str(1))
         add_sub_category = SubCategory(sub_category_code=last_code, sub=sub_category_name,
-                                       main_category_id=main_category_code)
+                                       main_category_id=main_category_code, branch_id = branch, user_id = request.user)
         add_sub_category.save()
     return redirect('categories')
 

@@ -750,6 +750,8 @@ def new_purchase_order_customer(request):
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
     allow_inventory_roles = inventory_roles(request.user)
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     get_last_po_no = PoHeaderCustomer.objects.last()
     all_item_code = Add_products.objects.all()
     customer = Q(account_id="100")
@@ -796,7 +798,7 @@ def new_purchase_order_customer(request):
                                      currency=currency,
                                      exchange_rate=exchange_rate, follow_up=follow_up, show_notification=True,
                                      footer_remarks=footer_remarks, account_id=account_id, user_id=request.user,
-                                     company_id=company)
+                                     company_id=company,branch_id = branch)
         po_header.save()
         items = json.loads(request.POST.get('items'))
         header_id = PoHeaderCustomer.objects.get(po_no=get_last_po_no)
