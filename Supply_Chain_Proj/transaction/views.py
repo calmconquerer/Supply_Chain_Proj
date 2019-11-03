@@ -737,7 +737,7 @@ def new_purchase(request):
 
         items = json.loads(request.POST.get('items'))
         purchase_header.save()
-        header_id = PurchaseHeader.objects.filter(company_id=company.id, branch_code=branch.branch_id).get(
+        header_id = PurchaseHeader.objects.filter(company_id=company.id, branch_id=branch.branch_id).get(
             purchase_no=purchase_id)
         for value in items:
             item_id = Add_products.objects.get(id=value["id"])

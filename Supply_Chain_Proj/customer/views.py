@@ -406,7 +406,7 @@ def new_rfq_customer(request):
             follow_up = '2010-06-22'
         rfq_header = RfqCustomerHeader(rfq_no=get_last_rfq_no, date=date, attn=attn, follow_up=follow_up,
                                        footer_remarks=footer_remarks, account_id=account_id, user_id=request.user,
-                                       company_id=company)
+                                       company_id=company, branch_id=branch)
         rfq_header.save()
         header_id = RfqCustomerHeader.objects.get(rfq_no=get_last_rfq_no)
         for value in items:
@@ -537,7 +537,8 @@ def new_quotation_customer(request):
     if request.method == 'POST':
         company = request.session['company']
         company = Company_info.objects.get(id=company)
-
+        branch = request.session['branch']
+        branch = Branch.objects.get(branch_id=branch)
         customer = request.POST.get('customer', False)
         attn = request.POST.get('attn', False)
         prcbasis = request.POST.get('prcbasis', False)
@@ -562,7 +563,7 @@ def new_quotation_customer(request):
                                                    remarks=remarks, currency=currency,
                                                    exchange_rate=exchange_rate, follow_up=follow_up,
                                                    show_notification=True, footer_remarks=footer_remarks,
-                                                   account_id=account_id, company_id=company, user_id=request.user)
+                                                   account_id=account_id, company_id=company, user_id=request.user, branch_id=branch)
         quotation_header.save()
         items = json.loads(request.POST.get('items'))
         header_id = QuotationHeaderCustomer.objects.get(quotation_no=get_last_quotation_no)
@@ -983,6 +984,8 @@ def delivery_challan_customer(request):
 def new_delivery_challan_customer(request):
     company = request.session['company']
     company = Company_info.objects.get(id=company)
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
     allow_transaction_roles = transaction_roles(request.user)
@@ -1067,10 +1070,10 @@ def new_delivery_challan_customer(request):
         cartage_amount = 0.00
         dc_header = DcHeaderCustomer(dc_no=get_last_dc_no, date=date, follow_up=follow_up, cartage_amount=0.00,
                                      po_no=po_client, footer_remarks=footer_remarks, account_id=account_id,
-                                     user_id=request.user, company_id=company)
+                                     user_id=request.user, company_id=company, branch_id=branch)
         dc_header.save()
         items = json.loads(request.POST.get('items'))
-        header_id = DcHeaderCustomer.objects.filter(company_id=company.id).get(dc_no=get_last_dc_no)
+        header_id = DcHeaderCustomer.objects.filter(company_id=company.id, branch_id=branch).get(dc_no=get_last_dc_no)
         for value in items:
             item_id = Add_products.objects.get(id=value["id"])
             dc_detail = DcDetailCustomer(item_id=item_id, description=value["description"], quantity=value["quantity"],
@@ -1091,6 +1094,8 @@ def new_delivery_challan_customer(request):
 def edit_delivery_challan_customer(request, pk):
     company = request.session['company']
     company = Company_info.objects.get(id=company)
+    branch = request.session['branch']
+    branch = Branch.objects.get(branch_id=branch)
     company = Q(company_id=company)
     allow_customer_roles = customer_roles(request.user)
     allow_supplier_roles = supplier_roles(request.user)
