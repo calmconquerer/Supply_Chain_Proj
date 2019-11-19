@@ -697,8 +697,8 @@ def new_purchase(request):
     sales_tax = 0
     price = 0
     all_item_code = Add_products.objects.all()
-    customer = Q(account_id="100")
-    supplier = Q(account_id="200")
+    customer = Q(account_id="100", is_active=True)
+    supplier = Q(account_id="200", is_active=True)
     all_accounts = ChartOfAccount.objects.filter(customer | supplier).all()
     get_last_purchase_no = PurchaseHeader.objects.filter(company_id=company.id, branch_id=branch.branch_id).last()
     if get_last_purchase_no:
@@ -1467,8 +1467,8 @@ def new_sale(request):
         return JsonResponse({'all_dc': all_dc})
 
 
-    customer = Q(account_id="100")
-    supplier = Q(account_id="200")
+    customer = Q(account_id="100", is_active=True)
+    supplier = Q(account_id="200", is_active=True)
     all_accounts = ChartOfAccount.objects.filter(customer | supplier).all()
     get_last_sale_no = SaleHeader.objects.filter(company_id=company.id, branch_id=branch.branch_id).last()
 
@@ -2675,7 +2675,8 @@ def edit_chart_of_account(request):
         op_type = request.POST.get('optradio')
         credit_limits = request.POST.get('credit_limits')
         is_active = request.POST.get('is_active')
-
+        is_active = bool(is_active)
+        print(is_active)
         if credit_limits is "":
             credit_limits = 0.00
         else:
@@ -2806,7 +2807,7 @@ def journal_voucher(request):
         get_last_tran_id = date[2:] + 'JV1'
 
     account_id = request.POST.get('account_title', False)
-    all_accounts = ChartOfAccount.objects.all()
+    all_accounts = ChartOfAccount.objects.filter(is_active=True).all()
     if account_id:
         account_info = ChartOfAccount.objects.filter(id=account_id).first()
         account_title = account_info.account_title
@@ -3300,8 +3301,8 @@ def new_bank_receiving_voucher(request):
     bank_account = request.POST.get('bank_account', False)
     check = request.POST.get('check', False)
     invoice_no = request.POST.get('invoice_no', False)
-    customer = Q(account_id="100")
-    supplier = Q(account_id="200")
+    customer = Q(account_id="100", is_active=True)
+    supplier = Q(account_id="200", is_active=True)
     bank = Q(account_id="300")
     all_accounts = ChartOfAccount.objects.filter(customer | supplier | bank).all()
     banks = Q(parent_id=16)

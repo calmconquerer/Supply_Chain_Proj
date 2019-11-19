@@ -4578,12 +4578,10 @@ $.fn.extend({
 			$('#main_category_id').val(main_id);
 		})
 
-//        var is_active = ""
 		$('#dataTable tbody').on('click','.edit_list',function(){
 			var currrow = $(this).closest('tr');
 			var id = currrow.find('td:eq(1)').text();
 			var account_title = currrow.find('td:eq(2)').text();
-//			console.log(is_active);
 			var is_active = currrow.find('td:eq(3)').text();
 			var parent_type = currrow.find('td:eq(4)').text();
 			var opening_balance = currrow.find('td:eq(5)').text();
@@ -4603,34 +4601,26 @@ $.fn.extend({
 				$('#credit').prop("checked", true);
 			}
 
-			if (is_active == "True") {
-                $("#is_active").prop("checked")
-            } else {
-                $("#is_active").prop("checked", false)
-            }
+             if (is_active == "True") {
+                $("#is_active").prop("checked", true);
+             } else {
+                $("#is_active").prop("checked", false);
+             };
 
-
-            $('#is_active').on("change" ,function() {
-                if (this.checked){
-                    is_active = "True";
-                    $('#is_active').val(is_active)
+            $("#is_active").on("change", function() {
+                if ($("#is_active").prop("checked") == true) {
+                  is_active = "True"
                 } else {
-                    this.checked == false
-                    is_active = "False";
-                    $('#is_active').val(is_active)
+                  is_active = ""
                 }
-                console.log(is_active)
             });
 
 
-//            $("#is_active").click(function() {
-//                $("#is_active").toggle(this.checked)
-//            });
 
 			opening_balance = Math.abs(opening_balance);
 			$('#id').val(id);
 			$('#account_title').val(account_title);
-//			$('#is_active').val(is_active);
+			$('#is_active').val(is_active);
 			$('#opening_balance').val(opening_balance);
 			$('#phone_no').val(phone_no);
 			$('#email_address').val(email_address);
@@ -4641,7 +4631,7 @@ $.fn.extend({
 			$('#remarks').val(remarks);
 			$('#credit_limits').val(credit_limit);
 
-//			console.log($("#is_active").val());
+//			console.log($("#is_active").value);
 
 
 	 })
